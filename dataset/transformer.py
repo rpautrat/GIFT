@@ -14,7 +14,10 @@ class TransformerCV:
         sri = cfg['sample_rotate_inter'] / 180 * np.pi
         srn = cfg['sample_rotate_num']
 
-        self.scales = [ssi ** (si + ssb) for si in range(ssn)]
+        if cfg['single_scale']:
+            self.scales = [1. for _ in range(ssn)]
+        else:
+            self.scales = [ssi ** (si + ssb) for si in range(ssn)]
         self.rotations = [sri * ri + srb for ri in range(srn)]
 
         self.grid_interval=cfg['hem_interval']

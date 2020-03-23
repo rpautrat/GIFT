@@ -6,6 +6,7 @@ embedder: "BilinearGCNN"
 model_dir: "data/model/GIFT-stage2-pretrain"
 step: -1
 
+single_scale: true
 sample_scale_begin: 0
 sample_scale_inter: 0.5 # 0.70716
 sample_scale_num: 5 # 6
