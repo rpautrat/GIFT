@@ -1,8 +1,8 @@
 from pyflann.index import FLANN
 import cv2
 
-from utils.base_utils import perspective_transform
-from utils.extend_utils.extend_utils_fn import find_nearest_point_idx
+from ..utils.base_utils import perspective_transform
+from ..utils.extend_utils.extend_utils_fn import find_nearest_point_idx
 import numpy as np
 
 

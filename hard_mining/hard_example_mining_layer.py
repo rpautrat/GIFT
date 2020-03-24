@@ -1,4 +1,4 @@
-import hard_mining.hard_example_mining as hem
+import .hard_example_mining as hem
 import torch
 
 def hard_example_mining_layer(feats,feats_ref,gt_loc,interval=32,thresh=8,cross_batch=False):

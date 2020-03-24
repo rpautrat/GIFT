@@ -1,6 +1,6 @@
 import torch
 
-from hard_mining.hard_example_mining_layer import semi_hard_example_mining_layer, sq_semi_hard_example_mining_layer
+from ..hard_mining.hard_example_mining_layer import semi_hard_example_mining_layer, sq_semi_hard_example_mining_layer
 
 def scale_rotate_offset_dist(feats0,feats1,scale_offset,rotate_offset,max_sn,max_rn):
     '''

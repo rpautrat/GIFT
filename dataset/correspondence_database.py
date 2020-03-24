@@ -5,8 +5,8 @@ import os
 import cv2
 from skimage.io import imread, imsave
 
-from dataset.GL3D_dataset import get_gl3d_dataset
-from utils.base_utils import perspective_transform, read_pickle, save_pickle
+from .GL3D_dataset import get_gl3d_dataset
+from ..utils.base_utils import perspective_transform, read_pickle, save_pickle
 
 
 def worker_init_fn(worker_id):

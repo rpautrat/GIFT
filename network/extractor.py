@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from network.operator import l2_normalize
+from .operator import l2_normalize
 
 class VanillaLightCNN(nn.Module):
     def __init__(self,cfg):

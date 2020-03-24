@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from network.operator import l2_normalize, RotationalConv2D
+from .operator import l2_normalize, RotationalConv2D
 
 class BilinearGCNN(nn.Module):
     def __init__(self, cfg):

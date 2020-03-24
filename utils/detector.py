@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-from utils.opencvhelper import SiftWrapper
+from ..utils.opencvhelper import SiftWrapper
 
 def detect_dog_keypoints(img):
     sift = cv2.xfeatures2d.SIFT_create()

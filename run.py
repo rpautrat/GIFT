@@ -1,9 +1,9 @@
 import argparse
 
-from dataset.correspondence_database import CorrespondenceDatabase
-from dataset.relative_pose_dataset import get_rel_pair_dataset
-from train.evaluation import EvaluationWrapper
-from train.trainer import Trainer
+from .dataset.correspondence_database import CorrespondenceDatabase
+from .dataset.relative_pose_dataset import get_rel_pair_dataset
+from .train.evaluation import EvaluationWrapper
+from .train.trainer import Trainer
 
 parser=argparse.ArgumentParser()
 parser.add_argument('--task', type=str, default='train')

@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 
-from utils.base_utils import get_rot_m, normalize_image, tensor_to_image, get_img_patch
+from ..utils.base_utils import get_rot_m, normalize_image, tensor_to_image, get_img_patch
 import cv2
 
 class TransformerCV:

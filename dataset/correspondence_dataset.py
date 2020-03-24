@@ -7,11 +7,11 @@ from skimage.io import imread
 from torch.utils.data import Dataset
 from torchvision.transforms import ColorJitter
 
-from dataset.homography import compute_approximated_affine_batch, sample_homography
-from dataset.photometric_augmentation import *
-from dataset.transformer import TransformerCV
-from utils.augmentation_utils import add_noise, gaussian_blur, jpeg_compress
-from utils.base_utils import gray_repeats, get_rot_m
+from .homography import compute_approximated_affine_batch, sample_homography
+from .photometric_augmentation import *
+from .transformer import TransformerCV
+from ..utils.augmentation_utils import add_noise, gaussian_blur, jpeg_compress
+from ..utils.base_utils import gray_repeats, get_rot_m
 
 
 class CorrespondenceDataset(Dataset):

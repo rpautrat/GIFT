@@ -2,7 +2,7 @@ import sys
 import time
 
 sys.path.append('.')
-from utils.extend_utils._extend_utils import lib, ffi
+from ..utils.extend_utils._extend_utils import lib, ffi
 import numpy as np
 
 

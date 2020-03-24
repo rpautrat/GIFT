@@ -1,19 +1,19 @@
 import cv2
 
-from dataset.transformer import TransformerCV
-from network.embedder import *
-from network.extractor import *
+from ..dataset.transformer import TransformerCV
+from .embedder import *
+from .extractor import *
 
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 
-from network.loss import scale_rotate_offset_dist, sample_semi_hard_feature, clamp_loss_all
-from network.operator import normalize_coordinates
+from .loss import scale_rotate_offset_dist, sample_semi_hard_feature, clamp_loss_all
+from .operator import normalize_coordinates
 
 import os
 
-from train.train_tools import to_cuda, dim_extend
+from ..train.train_tools import to_cuda, dim_extend
 
 name2embedder={
     "BilinearGCNN":BilinearGCNN,

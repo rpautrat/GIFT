@@ -7,11 +7,11 @@ from torch.utils.data import DataLoader
 import os
 import yaml
 
-from dataset.correspondence_dataset import CorrespondenceDataset
-from dataset.correspondence_database import CorrespondenceDatabase, worker_init_fn
-from dataset.transformer import TransformerCV
-from network.wrapper import TrainWrapper
-from train.train_tools import overwrite_configs, Recorder, reset_learning_rate
+from ..dataset.correspondence_dataset import CorrespondenceDataset
+from ..dataset.correspondence_database import CorrespondenceDatabase, worker_init_fn
+from ..dataset.transformer import TransformerCV
+from ..network.wrapper import TrainWrapper
+from .train_tools import overwrite_configs, Recorder, reset_learning_rate
 from torch.optim import Adam
 
 torch.multiprocessing.set_sharing_strategy('file_system')

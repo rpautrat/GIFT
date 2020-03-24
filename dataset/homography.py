@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from scipy.stats import truncnorm
 
-from utils.base_utils import perspective_transform
+from ..utils.base_utils import perspective_transform
 
 def rotate_pts(pts, max_angle,sample_type='rvs'):
     if sample_type=='rvs':

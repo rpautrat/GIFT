@@ -8,12 +8,12 @@ from easydict import EasyDict
 from pyflann import FLANN
 from skimage.io import imread
 
-from network.wrapper import GIFTDescriptor
-from utils.base_utils import perspective_transform, gray_repeats, save_pickle
-from utils.detector import SIFTDetector, HarrisDetector, GridDetector
-from utils.extend_utils.extend_utils_fn import find_nearest_point_idx, find_first_and_second_nearest_point
-from utils.match_utils import keep_valid_kps_feats, compute_angle
-from utils.superpoint_utils import SuperPointWrapper, SuperPointDescriptor
+from ..network.wrapper import GIFTDescriptor
+from ..utils.base_utils import perspective_transform, gray_repeats, save_pickle
+from ..utils.detector import SIFTDetector, HarrisDetector, GridDetector
+from ..utils.extend_utils.extend_utils_fn import find_nearest_point_idx, find_first_and_second_nearest_point
+from ..utils.match_utils import keep_valid_kps_feats, compute_angle
+from ..utils.superpoint_utils import SuperPointWrapper, SuperPointDescriptor
 
 
 class Matcher:

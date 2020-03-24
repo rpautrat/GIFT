@@ -4,7 +4,7 @@ import os
 from struct import unpack
 import numpy as np
 
-from utils.base_utils import read_pickle, save_pickle
+from ..utils.base_utils import read_pickle, save_pickle
 
 def read_corr(file_path):
     """Read the match correspondence file.

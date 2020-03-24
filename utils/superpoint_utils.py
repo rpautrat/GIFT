@@ -47,7 +47,7 @@ import torch
 import numpy as np
 import cv2
 
-from network.wrapper import interpolate_feats
+from ..network.wrapper import interpolate_feats
 
 class SuperPointNet(torch.nn.Module):
     """ Pytorch definition of SuperPoint Network. """
