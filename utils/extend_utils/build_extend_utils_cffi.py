@@ -1,6 +1,6 @@
 import os
 
-cuda_version='8.0' # installed cuda version
+cuda_version='10.0' # installed cuda version
 cuda_include=f'/usr/local/cuda-{cuda_version}/include'
 cuda_library=f'/usr/local/cuda-{cuda_version}/lib64'
 

@@ -1,5 +1,7 @@
-import .hard_example_mining as hem
 import torch
+
+from .hard_example_mining import (
+    hard_example_mining, semi_hard_example_mining, sq_semi_hard_example_mining)
 
 def hard_example_mining_layer(feats,feats_ref,gt_loc,interval=32,thresh=8,cross_batch=False):
     '''
@@ -17,7 +19,7 @@ def hard_example_mining_layer(feats,feats_ref,gt_loc,interval=32,thresh=8,cross_
     feats_ref=feats_ref.float().contiguous()
     gt_loc=gt_loc.float().contiguous()
     hard_idxs=torch.zeros([b,n,3],dtype=torch.int32,device=feats.device).contiguous()
-    hem.hard_example_mining(feats,feats_ref,gt_loc,hard_idxs,interval,thresh*thresh,cross_batch)
+    hard_example_mining(feats,feats_ref,gt_loc,hard_idxs,interval,thresh*thresh,cross_batch)
     return hard_idxs
 
 def semi_hard_example_mining_layer(feats,feats_dist,feats_ref,gt_loc,interval=32,thresh=8,margin=0.0,cross_batch=False):
@@ -39,7 +41,7 @@ def semi_hard_example_mining_layer(feats,feats_dist,feats_ref,gt_loc,interval=32
     feats_ref=feats_ref.float().contiguous()
     gt_loc=gt_loc.float().contiguous()
     hard_idxs=torch.zeros([b,n,3],dtype=torch.int32,device=feats.device).contiguous()
-    hem.semi_hard_example_mining(feats,feats_dist,feats_ref,gt_loc,hard_idxs,interval,thresh*thresh,margin,cross_batch)
+    semi_hard_example_mining(feats,feats_dist,feats_ref,gt_loc,hard_idxs,interval,thresh*thresh,margin,cross_batch)
     return hard_idxs
 
 def sq_semi_hard_example_mining_layer(feats, feats_dist_sq, feats_ref, gt_loc, interval=32, thresh=8, margin=0.0, cross_batch=False):
@@ -61,5 +63,5 @@ def sq_semi_hard_example_mining_layer(feats, feats_dist_sq, feats_ref, gt_loc, i
     feats_ref=feats_ref.float().contiguous()
     gt_loc=gt_loc.float().contiguous()
     hard_idxs=torch.zeros([b,n,3],dtype=torch.int32,device=feats.device).contiguous()
-    hem.sq_semi_hard_example_mining(feats, feats_dist_sq, feats_ref, gt_loc, hard_idxs, interval, thresh * thresh, margin, cross_batch)
+    sq_semi_hard_example_mining(feats, feats_dist_sq, feats_ref, gt_loc, hard_idxs, interval, thresh * thresh, margin, cross_batch)
     return hard_idxs

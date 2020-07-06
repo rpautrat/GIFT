@@ -441,14 +441,62 @@ _CFFI_UNUSED_FN static int _cffi_to_c_char32_t(PyObject *o)
         return (int)_cffi_to_c_wchar3216_t(o);
 }
 
-_CFFI_UNUSED_FN static PyObject *_cffi_from_c_char32_t(int x)
+_CFFI_UNUSED_FN static PyObject *_cffi_from_c_char32_t(unsigned int x)
 {
     if (sizeof(_cffi_wchar_t) == 4)
         return _cffi_from_c_wchar_t((_cffi_wchar_t)x);
     else
-        return _cffi_from_c_wchar3216_t(x);
+        return _cffi_from_c_wchar3216_t((int)x);
 }
 
+union _cffi_union_alignment_u {
+    unsigned char m_char;
+    unsigned short m_short;
+    unsigned int m_int;
+    unsigned long m_long;
+    unsigned long long m_longlong;
+    float m_float;
+    double m_double;
+    long double m_longdouble;
+};
+
+struct _cffi_freeme_s {
+    struct _cffi_freeme_s *next;
+    union _cffi_union_alignment_u alignment;
+};
+
+_CFFI_UNUSED_FN static int
+_cffi_convert_array_argument(struct _cffi_ctypedescr *ctptr, PyObject *arg,
+                             char **output_data, Py_ssize_t datasize,
+                             struct _cffi_freeme_s **freeme)
+{
+    char *p;
+    if (datasize < 0)
+        return -1;
+
+    p = *output_data;
+    if (p == NULL) {
+        struct _cffi_freeme_s *fp = (struct _cffi_freeme_s *)PyObject_Malloc(
+            offsetof(struct _cffi_freeme_s, alignment) + (size_t)datasize);
+        if (fp == NULL)
+            return -1;
+        fp->next = *freeme;
+        *freeme = fp;
+        p = *output_data = (char *)&fp->alignment;
+    }
+    memset((void *)p, 0, (size_t)datasize);
+    return _cffi_convert_array_from_object(p, ctptr, arg);
+}
+
+_CFFI_UNUSED_FN static void
+_cffi_free_array_arguments(struct _cffi_freeme_s *freeme)
+{
+    do {
+        void *p = (void *)freeme;
+        freeme = freeme->next;
+        PyObject_Free(p);
+    } while (freeme != NULL);
+}
 
 /**********  end CPython-specific section  **********/
 #else
@@ -496,143 +544,50 @@ static void (*_cffi_call_python_org)(struct _cffi_externpy_s *, char *);
 /************************************************************/
 
 static void *_cffi_types[] = {
-/*  0 */ _CFFI_OP(_CFFI_OP_FUNCTION, 47), // void()(float *, float *, float *, int, int, int, int)
-/*  1 */ _CFFI_OP(_CFFI_OP_POINTER, 43), // float *
+/*  0 */ _CFFI_OP(_CFFI_OP_FUNCTION, 22), // void()(float *, float *, int *, float *, int, int, int, int, int)
+/*  1 */ _CFFI_OP(_CFFI_OP_POINTER, 21), // float *
 /*  2 */ _CFFI_OP(_CFFI_OP_NOOP, 1),
-/*  3 */ _CFFI_OP(_CFFI_OP_NOOP, 1),
-/*  4 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7), // int
-/*  5 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
+/*  3 */ _CFFI_OP(_CFFI_OP_POINTER, 5), // int *
+/*  4 */ _CFFI_OP(_CFFI_OP_NOOP, 1),
+/*  5 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7), // int
 /*  6 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
 /*  7 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/*  8 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
-/*  9 */ _CFFI_OP(_CFFI_OP_FUNCTION, 47), // void()(float *, float *, float *, int, int, int, int, int)
-/* 10 */ _CFFI_OP(_CFFI_OP_NOOP, 1),
-/* 11 */ _CFFI_OP(_CFFI_OP_NOOP, 1),
+/*  8 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
+/*  9 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
+/* 10 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
+/* 11 */ _CFFI_OP(_CFFI_OP_FUNCTION, 22), // void()(float *, float *, int *, int, int, int, int, int)
 /* 12 */ _CFFI_OP(_CFFI_OP_NOOP, 1),
-/* 13 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/* 14 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
+/* 13 */ _CFFI_OP(_CFFI_OP_NOOP, 1),
+/* 14 */ _CFFI_OP(_CFFI_OP_NOOP, 3),
 /* 15 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
 /* 16 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
 /* 17 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/* 18 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
-/* 19 */ _CFFI_OP(_CFFI_OP_FUNCTION, 47), // void()(float *, float *, int *, int, int, int, int, int)
-/* 20 */ _CFFI_OP(_CFFI_OP_NOOP, 1),
-/* 21 */ _CFFI_OP(_CFFI_OP_NOOP, 1),
-/* 22 */ _CFFI_OP(_CFFI_OP_POINTER, 4), // int *
-/* 23 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/* 24 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/* 25 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/* 26 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/* 27 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/* 28 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
-/* 29 */ _CFFI_OP(_CFFI_OP_FUNCTION, 47), // void()(float *, float *, int *, int, int, int, int, int, int)
-/* 30 */ _CFFI_OP(_CFFI_OP_NOOP, 1),
-/* 31 */ _CFFI_OP(_CFFI_OP_NOOP, 1),
-/* 32 */ _CFFI_OP(_CFFI_OP_NOOP, 22),
-/* 33 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/* 34 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/* 35 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/* 36 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/* 37 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/* 38 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/* 39 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
-/* 40 */ _CFFI_OP(_CFFI_OP_FUNCTION, 47), // void()(float *, int *, float, int, int)
-/* 41 */ _CFFI_OP(_CFFI_OP_NOOP, 1),
-/* 42 */ _CFFI_OP(_CFFI_OP_NOOP, 22),
-/* 43 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 13), // float
-/* 44 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/* 45 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/* 46 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
-/* 47 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 0), // void
+/* 18 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
+/* 19 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
+/* 20 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
+/* 21 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 13), // float
+/* 22 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 0), // void
 };
 
-static void _cffi_d_countNeighborhoodLauncher(float * x0, int * x1, float x2, int x3, int x4)
+static void _cffi_d_findFirstAndSecondNearestFeatureIdxLauncher(float * x0, float * x1, int * x2, float * x3, int x4, int x5, int x6, int x7, int x8)
 {
-  countNeighborhoodLauncher(x0, x1, x2, x3, x4);
+  findFirstAndSecondNearestFeatureIdxLauncher(x0, x1, x2, x3, x4, x5, x6, x7, x8);
 }
 #ifndef PYPY_VERSION
 static PyObject *
-_cffi_f_countNeighborhoodLauncher(PyObject *self, PyObject *args)
-{
-  float * x0;
-  int * x1;
-  float x2;
-  int x3;
-  int x4;
-  Py_ssize_t datasize;
-  PyObject *arg0;
-  PyObject *arg1;
-  PyObject *arg2;
-  PyObject *arg3;
-  PyObject *arg4;
-
-  if (!PyArg_UnpackTuple(args, "countNeighborhoodLauncher", 5, 5, &arg0, &arg1, &arg2, &arg3, &arg4))
-    return NULL;
-
-  datasize = _cffi_prepare_pointer_call_argument(
-      _cffi_type(1), arg0, (char **)&x0);
-  if (datasize != 0) {
-    if (datasize < 0)
-      return NULL;
-    x0 = (float *)alloca((size_t)datasize);
-    memset((void *)x0, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x0, _cffi_type(1), arg0) < 0)
-      return NULL;
-  }
-
-  datasize = _cffi_prepare_pointer_call_argument(
-      _cffi_type(22), arg1, (char **)&x1);
-  if (datasize != 0) {
-    if (datasize < 0)
-      return NULL;
-    x1 = (int *)alloca((size_t)datasize);
-    memset((void *)x1, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x1, _cffi_type(22), arg1) < 0)
-      return NULL;
-  }
-
-  x2 = (float)_cffi_to_c_float(arg2);
-  if (x2 == (float)-1 && PyErr_Occurred())
-    return NULL;
-
-  x3 = _cffi_to_c_int(arg3, int);
-  if (x3 == (int)-1 && PyErr_Occurred())
-    return NULL;
-
-  x4 = _cffi_to_c_int(arg4, int);
-  if (x4 == (int)-1 && PyErr_Occurred())
-    return NULL;
-
-  Py_BEGIN_ALLOW_THREADS
-  _cffi_restore_errno();
-  { countNeighborhoodLauncher(x0, x1, x2, x3, x4); }
-  _cffi_save_errno();
-  Py_END_ALLOW_THREADS
-
-  (void)self; /* unused */
-  Py_INCREF(Py_None);
-  return Py_None;
-}
-#else
-#  define _cffi_f_countNeighborhoodLauncher _cffi_d_countNeighborhoodLauncher
-#endif
-
-static void _cffi_d_findFeatsDistanceLauncher(float * x0, float * x1, float * x2, int x3, int x4, int x5, int x6)
-{
-  findFeatsDistanceLauncher(x0, x1, x2, x3, x4, x5, x6);
-}
-#ifndef PYPY_VERSION
-static PyObject *
-_cffi_f_findFeatsDistanceLauncher(PyObject *self, PyObject *args)
+_cffi_f_findFirstAndSecondNearestFeatureIdxLauncher(PyObject *self, PyObject *args)
 {
   float * x0;
   float * x1;
-  float * x2;
-  int x3;
+  int * x2;
+  float * x3;
   int x4;
   int x5;
   int x6;
+  int x7;
+  int x8;
   Py_ssize_t datasize;
+  struct _cffi_freeme_s *large_args_free = NULL;
   PyObject *arg0;
   PyObject *arg1;
   PyObject *arg2;
@@ -640,46 +595,47 @@ _cffi_f_findFeatsDistanceLauncher(PyObject *self, PyObject *args)
   PyObject *arg4;
   PyObject *arg5;
   PyObject *arg6;
+  PyObject *arg7;
+  PyObject *arg8;
 
-  if (!PyArg_UnpackTuple(args, "findFeatsDistanceLauncher", 7, 7, &arg0, &arg1, &arg2, &arg3, &arg4, &arg5, &arg6))
+  if (!PyArg_UnpackTuple(args, "findFirstAndSecondNearestFeatureIdxLauncher", 9, 9, &arg0, &arg1, &arg2, &arg3, &arg4, &arg5, &arg6, &arg7, &arg8))
     return NULL;
 
   datasize = _cffi_prepare_pointer_call_argument(
       _cffi_type(1), arg0, (char **)&x0);
   if (datasize != 0) {
-    if (datasize < 0)
-      return NULL;
-    x0 = (float *)alloca((size_t)datasize);
-    memset((void *)x0, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x0, _cffi_type(1), arg0) < 0)
+    x0 = ((size_t)datasize) <= 640 ? (float *)alloca((size_t)datasize) : NULL;
+    if (_cffi_convert_array_argument(_cffi_type(1), arg0, (char **)&x0,
+            datasize, &large_args_free) < 0)
       return NULL;
   }
 
   datasize = _cffi_prepare_pointer_call_argument(
       _cffi_type(1), arg1, (char **)&x1);
   if (datasize != 0) {
-    if (datasize < 0)
-      return NULL;
-    x1 = (float *)alloca((size_t)datasize);
-    memset((void *)x1, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x1, _cffi_type(1), arg1) < 0)
+    x1 = ((size_t)datasize) <= 640 ? (float *)alloca((size_t)datasize) : NULL;
+    if (_cffi_convert_array_argument(_cffi_type(1), arg1, (char **)&x1,
+            datasize, &large_args_free) < 0)
       return NULL;
   }
 
   datasize = _cffi_prepare_pointer_call_argument(
-      _cffi_type(1), arg2, (char **)&x2);
+      _cffi_type(3), arg2, (char **)&x2);
   if (datasize != 0) {
-    if (datasize < 0)
-      return NULL;
-    x2 = (float *)alloca((size_t)datasize);
-    memset((void *)x2, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x2, _cffi_type(1), arg2) < 0)
+    x2 = ((size_t)datasize) <= 640 ? (int *)alloca((size_t)datasize) : NULL;
+    if (_cffi_convert_array_argument(_cffi_type(3), arg2, (char **)&x2,
+            datasize, &large_args_free) < 0)
       return NULL;
   }
 
-  x3 = _cffi_to_c_int(arg3, int);
-  if (x3 == (int)-1 && PyErr_Occurred())
-    return NULL;
+  datasize = _cffi_prepare_pointer_call_argument(
+      _cffi_type(1), arg3, (char **)&x3);
+  if (datasize != 0) {
+    x3 = ((size_t)datasize) <= 640 ? (float *)alloca((size_t)datasize) : NULL;
+    if (_cffi_convert_array_argument(_cffi_type(1), arg3, (char **)&x3,
+            datasize, &large_args_free) < 0)
+      return NULL;
+  }
 
   x4 = _cffi_to_c_int(arg4, int);
   if (x4 == (int)-1 && PyErr_Occurred())
@@ -693,18 +649,27 @@ _cffi_f_findFeatsDistanceLauncher(PyObject *self, PyObject *args)
   if (x6 == (int)-1 && PyErr_Occurred())
     return NULL;
 
+  x7 = _cffi_to_c_int(arg7, int);
+  if (x7 == (int)-1 && PyErr_Occurred())
+    return NULL;
+
+  x8 = _cffi_to_c_int(arg8, int);
+  if (x8 == (int)-1 && PyErr_Occurred())
+    return NULL;
+
   Py_BEGIN_ALLOW_THREADS
   _cffi_restore_errno();
-  { findFeatsDistanceLauncher(x0, x1, x2, x3, x4, x5, x6); }
+  { findFirstAndSecondNearestFeatureIdxLauncher(x0, x1, x2, x3, x4, x5, x6, x7, x8); }
   _cffi_save_errno();
   Py_END_ALLOW_THREADS
 
   (void)self; /* unused */
+  if (large_args_free != NULL) _cffi_free_array_arguments(large_args_free);
   Py_INCREF(Py_None);
   return Py_None;
 }
 #else
-#  define _cffi_f_findFeatsDistanceLauncher _cffi_d_findFeatsDistanceLauncher
+#  define _cffi_f_findFirstAndSecondNearestFeatureIdxLauncher _cffi_d_findFirstAndSecondNearestFeatureIdxLauncher
 #endif
 
 static void _cffi_d_findNearestPointIdxLauncher(float * x0, float * x1, int * x2, int x3, int x4, int x5, int x6, int x7)
@@ -724,6 +689,7 @@ _cffi_f_findNearestPointIdxLauncher(PyObject *self, PyObject *args)
   int x6;
   int x7;
   Py_ssize_t datasize;
+  struct _cffi_freeme_s *large_args_free = NULL;
   PyObject *arg0;
   PyObject *arg1;
   PyObject *arg2;
@@ -739,33 +705,27 @@ _cffi_f_findNearestPointIdxLauncher(PyObject *self, PyObject *args)
   datasize = _cffi_prepare_pointer_call_argument(
       _cffi_type(1), arg0, (char **)&x0);
   if (datasize != 0) {
-    if (datasize < 0)
-      return NULL;
-    x0 = (float *)alloca((size_t)datasize);
-    memset((void *)x0, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x0, _cffi_type(1), arg0) < 0)
+    x0 = ((size_t)datasize) <= 640 ? (float *)alloca((size_t)datasize) : NULL;
+    if (_cffi_convert_array_argument(_cffi_type(1), arg0, (char **)&x0,
+            datasize, &large_args_free) < 0)
       return NULL;
   }
 
   datasize = _cffi_prepare_pointer_call_argument(
       _cffi_type(1), arg1, (char **)&x1);
   if (datasize != 0) {
-    if (datasize < 0)
-      return NULL;
-    x1 = (float *)alloca((size_t)datasize);
-    memset((void *)x1, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x1, _cffi_type(1), arg1) < 0)
+    x1 = ((size_t)datasize) <= 640 ? (float *)alloca((size_t)datasize) : NULL;
+    if (_cffi_convert_array_argument(_cffi_type(1), arg1, (char **)&x1,
+            datasize, &large_args_free) < 0)
       return NULL;
   }
 
   datasize = _cffi_prepare_pointer_call_argument(
-      _cffi_type(22), arg2, (char **)&x2);
+      _cffi_type(3), arg2, (char **)&x2);
   if (datasize != 0) {
-    if (datasize < 0)
-      return NULL;
-    x2 = (int *)alloca((size_t)datasize);
-    memset((void *)x2, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x2, _cffi_type(22), arg2) < 0)
+    x2 = ((size_t)datasize) <= 640 ? (int *)alloca((size_t)datasize) : NULL;
+    if (_cffi_convert_array_argument(_cffi_type(3), arg2, (char **)&x2,
+            datasize, &large_args_free) < 0)
       return NULL;
   }
 
@@ -796,6 +756,7 @@ _cffi_f_findNearestPointIdxLauncher(PyObject *self, PyObject *args)
   Py_END_ALLOW_THREADS
 
   (void)self; /* unused */
+  if (large_args_free != NULL) _cffi_free_array_arguments(large_args_free);
   Py_INCREF(Py_None);
   return Py_None;
 }
@@ -803,210 +764,9 @@ _cffi_f_findNearestPointIdxLauncher(PyObject *self, PyObject *args)
 #  define _cffi_f_findNearestPointIdxLauncher _cffi_d_findNearestPointIdxLauncher
 #endif
 
-static void _cffi_d_findNearestSetPointIdxLauncher(float * x0, float * x1, int * x2, int x3, int x4, int x5, int x6, int x7, int x8)
-{
-  findNearestSetPointIdxLauncher(x0, x1, x2, x3, x4, x5, x6, x7, x8);
-}
-#ifndef PYPY_VERSION
-static PyObject *
-_cffi_f_findNearestSetPointIdxLauncher(PyObject *self, PyObject *args)
-{
-  float * x0;
-  float * x1;
-  int * x2;
-  int x3;
-  int x4;
-  int x5;
-  int x6;
-  int x7;
-  int x8;
-  Py_ssize_t datasize;
-  PyObject *arg0;
-  PyObject *arg1;
-  PyObject *arg2;
-  PyObject *arg3;
-  PyObject *arg4;
-  PyObject *arg5;
-  PyObject *arg6;
-  PyObject *arg7;
-  PyObject *arg8;
-
-  if (!PyArg_UnpackTuple(args, "findNearestSetPointIdxLauncher", 9, 9, &arg0, &arg1, &arg2, &arg3, &arg4, &arg5, &arg6, &arg7, &arg8))
-    return NULL;
-
-  datasize = _cffi_prepare_pointer_call_argument(
-      _cffi_type(1), arg0, (char **)&x0);
-  if (datasize != 0) {
-    if (datasize < 0)
-      return NULL;
-    x0 = (float *)alloca((size_t)datasize);
-    memset((void *)x0, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x0, _cffi_type(1), arg0) < 0)
-      return NULL;
-  }
-
-  datasize = _cffi_prepare_pointer_call_argument(
-      _cffi_type(1), arg1, (char **)&x1);
-  if (datasize != 0) {
-    if (datasize < 0)
-      return NULL;
-    x1 = (float *)alloca((size_t)datasize);
-    memset((void *)x1, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x1, _cffi_type(1), arg1) < 0)
-      return NULL;
-  }
-
-  datasize = _cffi_prepare_pointer_call_argument(
-      _cffi_type(22), arg2, (char **)&x2);
-  if (datasize != 0) {
-    if (datasize < 0)
-      return NULL;
-    x2 = (int *)alloca((size_t)datasize);
-    memset((void *)x2, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x2, _cffi_type(22), arg2) < 0)
-      return NULL;
-  }
-
-  x3 = _cffi_to_c_int(arg3, int);
-  if (x3 == (int)-1 && PyErr_Occurred())
-    return NULL;
-
-  x4 = _cffi_to_c_int(arg4, int);
-  if (x4 == (int)-1 && PyErr_Occurred())
-    return NULL;
-
-  x5 = _cffi_to_c_int(arg5, int);
-  if (x5 == (int)-1 && PyErr_Occurred())
-    return NULL;
-
-  x6 = _cffi_to_c_int(arg6, int);
-  if (x6 == (int)-1 && PyErr_Occurred())
-    return NULL;
-
-  x7 = _cffi_to_c_int(arg7, int);
-  if (x7 == (int)-1 && PyErr_Occurred())
-    return NULL;
-
-  x8 = _cffi_to_c_int(arg8, int);
-  if (x8 == (int)-1 && PyErr_Occurred())
-    return NULL;
-
-  Py_BEGIN_ALLOW_THREADS
-  _cffi_restore_errno();
-  { findNearestSetPointIdxLauncher(x0, x1, x2, x3, x4, x5, x6, x7, x8); }
-  _cffi_save_errno();
-  Py_END_ALLOW_THREADS
-
-  (void)self; /* unused */
-  Py_INCREF(Py_None);
-  return Py_None;
-}
-#else
-#  define _cffi_f_findNearestSetPointIdxLauncher _cffi_d_findNearestSetPointIdxLauncher
-#endif
-
-static void _cffi_d_findSetDistanceLauncher(float * x0, float * x1, float * x2, int x3, int x4, int x5, int x6, int x7)
-{
-  findSetDistanceLauncher(x0, x1, x2, x3, x4, x5, x6, x7);
-}
-#ifndef PYPY_VERSION
-static PyObject *
-_cffi_f_findSetDistanceLauncher(PyObject *self, PyObject *args)
-{
-  float * x0;
-  float * x1;
-  float * x2;
-  int x3;
-  int x4;
-  int x5;
-  int x6;
-  int x7;
-  Py_ssize_t datasize;
-  PyObject *arg0;
-  PyObject *arg1;
-  PyObject *arg2;
-  PyObject *arg3;
-  PyObject *arg4;
-  PyObject *arg5;
-  PyObject *arg6;
-  PyObject *arg7;
-
-  if (!PyArg_UnpackTuple(args, "findSetDistanceLauncher", 8, 8, &arg0, &arg1, &arg2, &arg3, &arg4, &arg5, &arg6, &arg7))
-    return NULL;
-
-  datasize = _cffi_prepare_pointer_call_argument(
-      _cffi_type(1), arg0, (char **)&x0);
-  if (datasize != 0) {
-    if (datasize < 0)
-      return NULL;
-    x0 = (float *)alloca((size_t)datasize);
-    memset((void *)x0, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x0, _cffi_type(1), arg0) < 0)
-      return NULL;
-  }
-
-  datasize = _cffi_prepare_pointer_call_argument(
-      _cffi_type(1), arg1, (char **)&x1);
-  if (datasize != 0) {
-    if (datasize < 0)
-      return NULL;
-    x1 = (float *)alloca((size_t)datasize);
-    memset((void *)x1, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x1, _cffi_type(1), arg1) < 0)
-      return NULL;
-  }
-
-  datasize = _cffi_prepare_pointer_call_argument(
-      _cffi_type(1), arg2, (char **)&x2);
-  if (datasize != 0) {
-    if (datasize < 0)
-      return NULL;
-    x2 = (float *)alloca((size_t)datasize);
-    memset((void *)x2, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x2, _cffi_type(1), arg2) < 0)
-      return NULL;
-  }
-
-  x3 = _cffi_to_c_int(arg3, int);
-  if (x3 == (int)-1 && PyErr_Occurred())
-    return NULL;
-
-  x4 = _cffi_to_c_int(arg4, int);
-  if (x4 == (int)-1 && PyErr_Occurred())
-    return NULL;
-
-  x5 = _cffi_to_c_int(arg5, int);
-  if (x5 == (int)-1 && PyErr_Occurred())
-    return NULL;
-
-  x6 = _cffi_to_c_int(arg6, int);
-  if (x6 == (int)-1 && PyErr_Occurred())
-    return NULL;
-
-  x7 = _cffi_to_c_int(arg7, int);
-  if (x7 == (int)-1 && PyErr_Occurred())
-    return NULL;
-
-  Py_BEGIN_ALLOW_THREADS
-  _cffi_restore_errno();
-  { findSetDistanceLauncher(x0, x1, x2, x3, x4, x5, x6, x7); }
-  _cffi_save_errno();
-  Py_END_ALLOW_THREADS
-
-  (void)self; /* unused */
-  Py_INCREF(Py_None);
-  return Py_None;
-}
-#else
-#  define _cffi_f_findSetDistanceLauncher _cffi_d_findSetDistanceLauncher
-#endif
-
 static const struct _cffi_global_s _cffi_globals[] = {
-  { "countNeighborhoodLauncher", (void *)_cffi_f_countNeighborhoodLauncher, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 40), (void *)_cffi_d_countNeighborhoodLauncher },
-  { "findFeatsDistanceLauncher", (void *)_cffi_f_findFeatsDistanceLauncher, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 0), (void *)_cffi_d_findFeatsDistanceLauncher },
-  { "findNearestPointIdxLauncher", (void *)_cffi_f_findNearestPointIdxLauncher, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 19), (void *)_cffi_d_findNearestPointIdxLauncher },
-  { "findNearestSetPointIdxLauncher", (void *)_cffi_f_findNearestSetPointIdxLauncher, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 29), (void *)_cffi_d_findNearestSetPointIdxLauncher },
-  { "findSetDistanceLauncher", (void *)_cffi_f_findSetDistanceLauncher, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 9), (void *)_cffi_d_findSetDistanceLauncher },
+  { "findFirstAndSecondNearestFeatureIdxLauncher", (void *)_cffi_f_findFirstAndSecondNearestFeatureIdxLauncher, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 0), (void *)_cffi_d_findFirstAndSecondNearestFeatureIdxLauncher },
+  { "findNearestPointIdxLauncher", (void *)_cffi_f_findNearestPointIdxLauncher, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 11), (void *)_cffi_d_findNearestPointIdxLauncher },
 };
 
 static const struct _cffi_type_context_s _cffi_type_context = {
@@ -1016,12 +776,12 @@ static const struct _cffi_type_context_s _cffi_type_context = {
   NULL,  /* no struct_unions */
   NULL,  /* no enums */
   NULL,  /* no typenames */
-  5,  /* num_globals */
+  2,  /* num_globals */
   0,  /* num_struct_unions */
   0,  /* num_enums */
   0,  /* num_typenames */
   NULL,  /* no includes */
-  48,  /* num_types */
+  23,  /* num_types */
   0,  /* flags */
 };
 
